@@ -1,38 +1,27 @@
-from collections import deque
-from sys import stdin
-input = stdin.readline
+import sys
+input = sys.stdin.readline
 
-arr = []
-house = []
-estate = 0
+n=int(input())
+arr = [list(map(int,str(input().strip()))) for _ in range(n)]
+dir = (1,0),(-1,0),(0,1),(0,-1)
+ans = 0
+cnt = []
 
-n = int(input())
+def dfs(x,y):
+    arr[x][y] = 0 
+    cnt[ans] += 1
+    for dx, dy in dir:
+        nx, ny = dx + x, dy + y
+        if 0 <= nx < n and 0 <= ny < n and arr[nx][ny]:
+            dfs(nx,ny)
+
 for i in range(n):
-    arr.append(list(input()))
-    if arr[i][-1] != '0' and arr[i][-1] != '1':
-        arr[i].pop()
-    arr[i]=list(map(int,arr[i]))
+    for j in range(n):
+        if arr[i][j]:
+            cnt.append(0)
+            dfs(i,j)
+            ans+=1
 
-for i in range(n):
-    if any(arr[i]):
-        for j in range(n):
-            if arr[i][j]==1:
-                dir = [(1,0),(-1,0),(0,1),(0,-1)]
-                stack = [(i,j)]
-                arr[i][j]=0
-                cnt = 0
-                while stack:
-                    cur = stack.pop()
-                    for nx, ny in dir:
-                        x,y = nx + cur[0], ny+cur[1]
-                        if -1<x<n and -1<y<n and arr[x][y]==1:
-                            arr[x][y] = 0
-                            stack.append((x,y))
-                            cnt +=1
-                house.append(cnt+1)
-                estate+=1
-
-house.sort()
-print(estate)
-print(*house,sep='\n')
-                        
+print(ans)
+cnt.sort()
+print('\n'.join(map(str,cnt)))
